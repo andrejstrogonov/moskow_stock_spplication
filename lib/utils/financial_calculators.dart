@@ -44,7 +44,7 @@ double futureValueWithMonthlyContributions({
   if (r == 0) {
     return principal + monthlyContribution * months;
   }
-  final double factor = pow(1 + r, months);
+  final num factor = pow(1 + r, months);
   return principal * factor + monthlyContribution * ( (factor - 1) / r );
 }
 
