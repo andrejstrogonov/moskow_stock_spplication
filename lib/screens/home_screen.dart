@@ -4,6 +4,9 @@ import '../models/portfolio.dart';
 import '../services/portfolio_service.dart';
 import 'portfolio_detail_screen.dart';
 import 'create_portfolio_screen.dart';
+import 'goal_portfolio_screen.dart';
+import 'deposit_calculator_screen.dart';
+import 'loan_calculator_screen.dart';
 
 /// Главный экран приложения со списком портфелей
 class HomeScreen extends StatefulWidget {
@@ -41,16 +44,60 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: _buildBody(),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const CreatePortfolioScreen(),
-            ),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Новый портфель'),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const CreatePortfolioScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.add),
+            label: const Text('Новый портфель'),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton.extended(
+            backgroundColor: Colors.teal,
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const GoalPortfolioScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.track_changes),
+            label: const Text('По цели'),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton.extended(
+            backgroundColor: Colors.green,
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const DepositCalculatorScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.savings),
+            label: const Text('Вклад'),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton.extended(
+            backgroundColor: Colors.brown,
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const LoanCalculatorScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.account_balance),
+            label: const Text('Кредит'),
+          ),
+        ],
       ),
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '../models/instrument.dart';
 import '../models/portfolio.dart';
 import '../models/position.dart';
@@ -270,125 +272,127 @@ class PortfolioService {
 
   /// Загрузка примеров портфелей
   void _loadSamplePortfolios() {
-    // Консервативный портфель
+    _portfolios.clear();
+
+    // 1) Buffett-style (концентрация в крупных качественных компаниях, высокая доля акций)
     _portfolios.add(Portfolio(
-      id: 'portfolio_conservative',
-      name: 'Консервативный портфель',
-      description: 'Ориентирован на сохранение капитала и стабильный доход 10-14% годовых',
-      type: PortfolioType.conservative,
+      id: 'portfolio_buffett',
+      name: 'Портфель Уоррена Баффета (пример)',
+      description: 'Высокая доля качественных голубых фишек и дивидендных экспортёров',
+      type: PortfolioType.custom,
       positions: [
         Position(
-          id: 'pos_1',
+          id: 'b_pos_1',
+          instrumentId: 'stock_lukoil',
+          quantity: 20,
+          purchasePrice: 5600,
+          purchaseDate: DateTime(2025, 3, 1),
+          currentPrice: 5850,
+          notes: 'Крупная энергетическая компания',
+        ),
+        Position(
+          id: 'b_pos_2',
+          instrumentId: 'stock_nornickel',
+          quantity: 2,
+          purchasePrice: 12000,
+          purchaseDate: DateTime(2025, 3, 1),
+          currentPrice: 12500,
+          notes: 'Норникель - стабильные дивиденды',
+        ),
+        Position(
+          id: 'b_pos_3',
+          instrumentId: 'stock_sber',
+          quantity: 50,
+          purchasePrice: 270,
+          purchaseDate: DateTime(2025, 3, 1),
+          currentPrice: 275.50,
+          notes: 'Финансовый якорь',
+        ),
+      ],
+      targetBonds: 5,
+      targetStocks: 85,
+      targetFutures: 5,
+      targetCash: 5,
+    ));
+
+    // 2) All-Weather (Ray Dalio) - диверсификация между облигациями, акциями и товарами
+    _portfolios.add(Portfolio(
+      id: 'portfolio_allweather',
+      name: 'All-Weather (пример)',
+      description: 'Сбалансированная диверсификация для устойчивости в любых условиях',
+      type: PortfolioType.balanced,
+      positions: [
+        Position(
+          id: 'aw_pos_1',
           instrumentId: 'ofz_1',
-          quantity: 10,
+          quantity: 15,
           purchasePrice: 1000,
           purchaseDate: DateTime(2025, 3, 1),
           currentPrice: 1005,
-          notes: 'ОФЗ базовый инструмент',
+          notes: 'ОФЗ - защита при дефляции/рецессии',
         ),
         Position(
-          id: 'pos_2',
+          id: 'aw_pos_2',
           instrumentId: 'bond_sber',
-          quantity: 5,
+          quantity: 10,
           purchasePrice: 1010,
           purchaseDate: DateTime(2025, 3, 1),
           currentPrice: 1020,
           notes: 'Корпоративные облигации',
         ),
         Position(
-          id: 'pos_3',
-          instrumentId: 'stock_gazprom',
-          quantity: 50,
-          purchasePrice: 140,
-          purchaseDate: DateTime(2025, 3, 1),
-          currentPrice: 145.80,
-          notes: 'Дивидендный экспортёр',
-        ),
-      ],
-      targetBonds: 55,
-      targetStocks: 35,
-      targetFutures: 0,
-      targetCash: 10,
-    ));
-
-    // Сбалансированный портфель
-    _portfolios.add(Portfolio(
-      id: 'portfolio_balanced',
-      name: 'Сбалансированный портфель',
-      description: 'Комбинация роста и дохода, потенциал 15-25% годовых',
-      type: PortfolioType.balanced,
-      positions: [
-        Position(
-          id: 'pos_4',
-          instrumentId: 'ofz_2',
-          quantity: 8,
-          purchasePrice: 995,
-          purchaseDate: DateTime(2025, 3, 1),
-          currentPrice: 998,
-          notes: 'ОФЗ длинные',
-        ),
-        Position(
-          id: 'pos_5',
+          id: 'aw_pos_3',
           instrumentId: 'stock_lukoil',
-          quantity: 20,
+          quantity: 10,
           purchasePrice: 5600,
           purchaseDate: DateTime(2025, 3, 1),
           currentPrice: 5850,
-          notes: 'Основной экспортёр',
-        ),
-        Position(
-          id: 'pos_6',
-          instrumentId: 'stock_sber',
-          quantity: 30,
-          purchasePrice: 270,
-          purchaseDate: DateTime(2025, 3, 1),
-          currentPrice: 275.50,
-          notes: 'Дивидендный якорь',
+          notes: 'Энергетика - товарная компонента',
         ),
       ],
-      targetBonds: 35,
-      targetStocks: 50,
+      targetBonds: 45,
+      targetStocks: 40,
       targetFutures: 5,
       targetCash: 10,
     ));
 
-    // Агрессивный портфель
+    // 3) Growth/Opportunistic (агрессивный пример)
     _portfolios.add(Portfolio(
-      id: 'portfolio_aggressive',
-      name: 'Агрессивный портфель',
-      description: 'Максимизация роста, потенциал 25-40%+ годовых с высокой волатильностью',
+      id: 'portfolio_growth',
+      name: 'Growth / Opportunistic',
+      description: 'Агрессивный рост, фокус на акциях и фьючерсах для прироста капитала',
       type: PortfolioType.aggressive,
       positions: [
         Position(
-          id: 'pos_7',
-          instrumentId: 'stock_nornickel',
-          quantity: 5,
-          purchasePrice: 12000,
-          purchaseDate: DateTime(2025, 3, 1),
-          currentPrice: 12500,
-          notes: 'Высокодивидендный экспортёр',
-        ),
-        Position(
-          id: 'pos_8',
+          id: 'g_pos_1',
           instrumentId: 'stock_yandex',
-          quantity: 8,
+          quantity: 10,
           purchasePrice: 2500,
           purchaseDate: DateTime(2025, 3, 1),
           currentPrice: 2650,
-          notes: 'Ростовая история',
+          notes: 'IT ростовая позиция',
         ),
         Position(
-          id: 'pos_9',
-          instrumentId: 'futures_si',
-          quantity: 10,
-          purchasePrice: 94.50,
+          id: 'g_pos_2',
+          instrumentId: 'futures_gazprom',
+          quantity: 5,
+          purchasePrice: 145.0,
           purchaseDate: DateTime(2025, 3, 1),
-          currentPrice: 95.50,
-          notes: 'Спекулятивный блок - фьючерс валютной пары',
+          currentPrice: 146.5,
+          notes: 'Спекулятивный фьючерс',
+        ),
+        Position(
+          id: 'g_pos_3',
+          instrumentId: 'stock_magnitogorsk',
+          quantity: 100,
+          purchasePrice: 27.0,
+          purchaseDate: DateTime(2025, 3, 1),
+          currentPrice: 28.5,
+          notes: 'Металлургия - циклический рост',
         ),
       ],
-      targetBonds: 15,
-      targetStocks: 65,
+      targetBonds: 10,
+      targetStocks: 70,
       targetFutures: 15,
       targetCash: 5,
     ));
@@ -404,6 +408,120 @@ class PortfolioService {
     } catch (e) {
       return null;
     }
+  }
+
+  /// Сгенерировать рекомендованный портфель по финансовой цели
+  /// capital - стартовый капитал (в рублях)
+  /// targetAnnualReturnPercent - желаемая годовая доходность в % (например 18 для 18%)
+  /// years - горизонт инвестирования в годах
+  /// riskLevel - 'low'|'medium'|'high'
+  /// Возвращает пару: Portfolio и текст рекомендации (если необходимо)
+  Map<String, dynamic> generatePortfolioForGoal({
+    required double capital,
+    required double targetAnnualReturnPercent,
+    required int years,
+    required String riskLevel,
+  }) {
+    // Предположения по ожидаемой доходности по классам
+    const double bondReturn = 8.0; // % годовых
+    const double stockReturn = 14.0; // % годовых (смешение дивиденд+рост)
+    const double futuresReturn = 25.0; // % годовых (рискованная часть)
+
+    // Базовые распределения по профилям риска
+    double wBonds = 0, wStocks = 0, wFutures = 0, wCash = 0;
+    if (riskLevel == 'low') {
+      wBonds = 70;
+      wStocks = 25;
+      wFutures = 5;
+      wCash = 0;
+    } else if (riskLevel == 'medium') {
+      wBonds = 40;
+      wStocks = 50;
+      wFutures = 10;
+      wCash = 0;
+    } else {
+      // high
+      wBonds = 10;
+      wStocks = 65;
+      wFutures = 20;
+      wCash = 5;
+    }
+
+    // Ожидаемая доходность портфеля
+    double expectedReturn = (wBonds / 100) * bondReturn + (wStocks / 100) * stockReturn + (wFutures / 100) * futuresReturn;
+
+    String recommendation = '';
+    bool achievable = expectedReturn >= targetAnnualReturnPercent;
+
+    if (!achievable) {
+      // Рассчитать примерный множитель/рычаг, необходимый для достижения цели
+      double requiredMultiplier = targetAnnualReturnPercent / (expectedReturn == 0 ? 0.0001 : expectedReturn);
+      recommendation = 'По текущему распределению ожидаемая доходность ≈ ${expectedReturn.toStringAsFixed(1)}%.';
+      recommendation += ' Чтобы достичь ${targetAnnualReturnPercent.toStringAsFixed(1)}% годовых, ';
+      recommendation += 'нужен примерный рычаг ×${requiredMultiplier.toStringAsFixed(2)} или более агрессивный набор активов.';
+      recommendation += ' Рекомендация: увеличить долю акций/фьючерсов или увеличить горизонт/внести дополнительный капитал.';
+    } else {
+      recommendation = 'Ожидаемая доходность ≈ ${expectedReturn.toStringAsFixed(1)}% — цель достижима при выбранном рисковом профиле.';
+    }
+
+    // Собираем портфель: подбираем инструменты из _instruments
+    // Для простоты: берем несколько наиболее подходящих инструментов
+    List<Instrument> bondList = _instruments.where((i) => i.type == InstrumentType.bond).toList();
+    List<Instrument> stockList = _instruments.where((i) => i.type == InstrumentType.stock).toList();
+    List<Instrument> futuresList = _instruments.where((i) => i.type == InstrumentType.futures).toList();
+
+    List<Position> positions = [];
+
+    double allocate(String cls, double weight) {
+      return (capital * weight) / 100.0;
+    }
+
+    // helper to add positions by allocating across top N instruments
+    void allocateToInstruments(List<Instrument> list, double amount) {
+      if (list.isEmpty || amount <= 0) return;
+      int n = min(list.length, 3);
+      double per = amount / n;
+      for (int i = 0; i < n; i++) {
+        final inst = list[i];
+        double price = inst.currentPrice > 0 ? inst.currentPrice : 1.0;
+        double qty = (per / price);
+        if (qty < 1 && inst is Futures) qty = 1; // минимум 1 контракт
+        if (qty >= 1) {
+          positions.add(Position(
+            id: 'goal_${inst.id}_${DateTime.now().millisecondsSinceEpoch}_$i',
+            instrumentId: inst.id,
+            quantity: qty,
+            purchasePrice: price,
+            purchaseDate: DateTime.now(),
+            currentPrice: price,
+            notes: 'Auto allocation for goal',
+          ));
+        }
+      }
+    }
+
+    allocateToInstruments(bondList, allocate('bond', wBonds));
+    allocateToInstruments(stockList, allocate('stock', wStocks));
+    allocateToInstruments(futuresList, allocate('futures', wFutures));
+
+    final portfolio = Portfolio(
+      id: 'portfolio_goal_${DateTime.now().millisecondsSinceEpoch}',
+      name: 'Портфель по цели ${targetAnnualReturnPercent.toStringAsFixed(1)}%/${years}л',
+      description: 'Сгенерирован автоматически по сумме ${capital.toStringAsFixed(0)} ₽, цели ${targetAnnualReturnPercent.toStringAsFixed(1)}% и риску $riskLevel',
+      type: PortfolioType.custom,
+      positions: positions,
+      targetBonds: wBonds,
+      targetStocks: wStocks,
+      targetFutures: wFutures,
+      targetCash: wCash,
+    );
+
+    return {
+      'portfolio': portfolio,
+      'expectedReturn': expectedReturn,
+      'achievable': achievable,
+      'recommendation': recommendation,
+    };
   }
 
   void addPortfolio(Portfolio portfolio) {
