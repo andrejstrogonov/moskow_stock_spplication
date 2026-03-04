@@ -220,3 +220,42 @@ A: Начните с "Консервативного портфеля" - он б
 Дата: Март 2026  
 Платформа: Windows x64
 
+## 🔧 Решение ошибки CMake generator (Visual Studio mismatch)
+
+Если вы видите ошибку:
+
+```
+CMake Error: Error: generator : Visual Studio 16 2019
+Does not match the generator used previously: Visual Studio 18 2026
+Either remove the CMakeCache.txt file and CMakeFiles directory or choose a different binary directory.
+Error: Unable to generate build files
+```
+
+Выполните очистку артефактов CMake и пересоберите проект:
+
+1) Быстрая очистка (PowerShell):
+```powershell
+# из корня проекта
+.\scripts\clean_cmake.ps1
+```
+
+2) Альтернативно, вручную:
+```powershell
+# удалите папку build/windows или только CMake файлы
+Remove-Item -Recurse -Force .\build\windows\x64\CMakeFiles
+Remove-Item -Recurse -Force .\build\windows\x64\CMakeCache.txt
+
+# затем
+flutter clean
+flutter pub get
+flutter run -d windows
+```
+
+3) Если у вас несколько версий Visual Studio и вы хотите явно указать генератор CMake,
+вместо удаления артефактов можно использовать другую папку сборки:
+```powershell
+cmake -S windows -B build\windows\x64_vs2019 -G "Visual Studio 16 2019" -A x64
+# затем собрать через flutter (необычная опция, рекомендуется только опытным пользователям)
+```
+
+Этот проект теперь включает скрипт `scripts/clean_cmake.ps1` для быстрой очистки.
