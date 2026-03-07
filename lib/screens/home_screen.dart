@@ -7,6 +7,7 @@ import 'create_portfolio_screen.dart';
 import 'goal_portfolio_screen.dart';
 import 'deposit_calculator_screen.dart';
 import 'loan_calculator_screen.dart';
+import 'family_budget_planning_screen.dart';
 
 /// Главный экран приложения со списком портфелей
 class HomeScreen extends StatefulWidget {
@@ -48,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton.extended(
+            heroTag: 'new_portfolio',
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -60,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 8),
           FloatingActionButton.extended(
+            heroTag: 'goal_portfolio',
             backgroundColor: Colors.teal,
             onPressed: () {
               Navigator.of(context).push(
@@ -73,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 8),
           FloatingActionButton.extended(
+            heroTag: 'deposit_calculator',
             backgroundColor: Colors.green,
             onPressed: () {
               Navigator.of(context).push(
@@ -86,6 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 8),
           FloatingActionButton.extended(
+            heroTag: 'loan_calculator',
             backgroundColor: Colors.brown,
             onPressed: () {
               Navigator.of(context).push(
@@ -96,6 +101,20 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             icon: const Icon(Icons.account_balance),
             label: const Text('Кредит'),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton.extended(
+            heroTag: 'family_budget',
+            backgroundColor: Colors.pink,
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const FamilyBudgetPlanningScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.family_restroom),
+            label: const Text('Бюджет семьи'),
           ),
         ],
       ),
